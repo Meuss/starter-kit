@@ -1,0 +1,10 @@
+Title: Home
+
+----
+
+Text: Hey, welcome to my small Kirby starter kit! I set up this repo so that I can get up and running with future Kirby projects quickly.
+
+You can see all the code of this starter kit on github, username Meuss. Feel free to tell me if you think of anything I can do to make this repo better, or send me an email at thomas.miller147@gmail.com
+
+Thank you kirby team! You and your CMS are awesome.
+

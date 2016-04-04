@@ -9,7 +9,7 @@ var gulp            = require('gulp'),                      // use gulp
     reload          = browserSync.reload,                   // variable to reload the browser
     uglify          = require('gulp-uglify'),               // uglifies Javascript
     minify          = require('gulp-clean-css'),            // minifies CSS
-    concat          = require('gulp-concat')               // concatenates files
+    concat          = require('gulp-concat');               // concatenates files
 
 // ===================================
 // Javascript task:

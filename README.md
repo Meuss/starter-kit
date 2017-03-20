@@ -1,5 +1,5 @@
 # Kirby / Sass / Gulp Kit
-My updated quick starting kit.
+My ~~updated~~ quick starting kit.
 
 ## What I've included
 

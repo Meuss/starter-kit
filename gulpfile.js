@@ -28,7 +28,7 @@ gulp.task('javascript', function(){
     presets: ['es2015']
   }))
   .pipe(sourcemaps.write('.'))
-  .pipe(uglify())
+  // .pipe(uglify())
   .pipe(gulp.dest('assets/min'))
   .pipe(reload({stream:true}))
   .pipe(notify({ message: 'global js'}));
@@ -46,7 +46,7 @@ gulp.task('javascript-single', function(){
       presets: ['es2015']
     }))
     .pipe(sourcemaps.write('.'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(gulp.dest('assets/min/single'))
     .pipe(reload({stream:true}))
     .pipe(notify({ message: 'single js'}));
@@ -61,7 +61,7 @@ gulp.task('sass', function(){
     .pipe(plumber())
     .pipe(sass())
     .pipe(autoprefixer('>1%', 'ios_saf 8', 'ie 11'))
-    .pipe(minify())
+    // .pipe(minify())
     .pipe(gulp.dest('assets/min'))
     .pipe(reload({stream:true}))
     .pipe(notify({ message: 'scss'}));

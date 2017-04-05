@@ -1,0 +1,79 @@
+// =====================================================
+// Media Queries
+// =====================================================
+
+// NOT MOBILE-FIRST in this version!
+$s: 480px;
+$m: 768px;
+$l: 992px;
+$xl: 1200px;
+$xxl: 1400px;
+
+// min-width: 2075px
+@mixin xxl() {
+  @media (min-width: "#{$xxl}"){
+    @content;
+  }
+}
+// max-width: 1400px
+@mixin xl() {
+  @media (max-width: "#{$xxl}"){
+    @content;
+  }
+}
+// max-width: 1200px
+@mixin lg() {
+  @media (max-width: "#{$xl}"){
+    @content;
+  }
+}
+// max-width: 992px
+@mixin md(){
+  @media (max-width: "#{$l}"){
+    @content;
+  }
+}
+// max-width: 768px
+@mixin sm() {
+  @media (max-width: "#{$m}"){
+    @content;
+  }
+}
+// max-width: 480px
+@mixin xs() {
+  @media (max-width: "#{$s}"){
+    @content;
+  }
+}
+#mediaqueries {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  display: flex;
+  font-size: 16px;
+  background-color: pink;
+  // display: none;
+  &::after {
+    @include xxl() {
+      content: "xxl>1400";
+    }
+    @include xl() {
+      content: "xl<1400";
+    }
+    @include lg() {
+      content: "lg<1200";
+    }
+    @include md() {
+      content: "md<992";
+    }
+    @include sm() {
+      content: "sm<768";
+    }
+    @include xs() {
+      content: "xs<480";
+    }
+  }
+}

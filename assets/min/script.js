@@ -1,3 +1,1 @@
-$(function() {
-    console.log( "jQuery is ready to party!" );
-});
+$(function(){console.log("jQuery is ready to party!")});

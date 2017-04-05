@@ -24,17 +24,19 @@ class TagsField extends TextField {
 
     if(isset($this->data)) {
 
-      $input->data('url', html(json_encode($this->data), false));
+      $input->data('url', json_encode($this->data));
 
     } else if($page = $this->page()) {
 
-      empty($this->field) ? $field = $this->name() : $field = $this->field;
+      $field = empty($this->field) ? $this->name() : $this->field;
+      $model = is_a($this->model, 'File') ? 'file' : 'page';
 
       $query = array(
         'uri'       => $page->id(),
         'index'     => $this->index(),
         'field'     => $field,
         'yaml'      => $this->parentField,
+        'model'     => $model,
         'separator' => $this->separator(),
         '_csrf'     => panel()->csrf(),
       );

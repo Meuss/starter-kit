@@ -1,0 +1,25 @@
+{
+  "env": {
+    es6: true,
+    "browser": true,
+    "node": true,
+    "jquery": true
+  },
+  "extends": "airbnb",
+  "globals": {
+    "RevealFx": true,
+    "Swiper": true,
+    "TimelineLite": true,
+    "Power3": true
+  },
+  "rules": {
+    "react/jsx-tag-spacing": 0,
+    "react/no-array-index-key": 0,
+    "react/require-default-props": 0,
+    "no-param-reassign": 0,
+    "no-use-before-define": 0,
+    "func-names": 0,
+    "no-restricted-syntax": 0,
+    "max-len": 0
+  }
+}

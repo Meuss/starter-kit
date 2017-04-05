@@ -35,7 +35,10 @@ class Blueprint extends Obj {
     $this->name = basename(strtolower($this->user->role()));
 
     // try to find a user blueprint
-    $file = f::resolve(static::$root . DS . $this->name, array('yml', 'php', 'yaml'));
+    $file = kirby()->get('blueprint', 'users/' . $this->name);
+
+    // fall back to the default user blueprint
+    if(!$file) $file = kirby()->get('blueprint', 'users/default');
 
     if($file) {
       $this->file = $file;

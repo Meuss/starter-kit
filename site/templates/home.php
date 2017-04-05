@@ -9,6 +9,7 @@
 
     <hr>
 
+    <?php snippet('projects') ?>
 
   </main>
 

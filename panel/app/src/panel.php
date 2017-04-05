@@ -24,6 +24,8 @@ use Toolkit;
 use Tpl;
 use Url;
 
+use Kirby\Panel\Event;
+use Kirby\Panel\ErrorHandling;
 use Kirby\Panel\Installer;
 use Kirby\Panel\Form;
 use Kirby\Panel\Models\Site;
@@ -33,13 +35,13 @@ use Kirby\Panel\Models\Page\Blueprint as PageBlueprint;
 
 class Panel {
 
-  static public $version  = '2.2.2';
+  static public $version = '2.4.1';
 
   // minimal requirements
   static public $requires = array(
     'php'     => '5.4.0',
-    'toolkit' => '2.2.2',
-    'kirby'   => '2.2.1'
+    'toolkit' => '2.4.1',
+    'kirby'   => '2.4.1'
   );
 
   static public $instance;
@@ -91,7 +93,13 @@ class Panel {
     // store the instance as a singleton
     static::$instance = $this;
 
+    // init the core
     $this->kirby = $kirby;
+
+    // configure the site setup
+    $this->site = $this->site();
+
+    // store the roots and urls for the panel
     $this->roots = new \Kirby\Panel\Roots($this, $root);
     $this->urls  = new \Kirby\Panel\Urls($this, $root);
 
@@ -102,24 +110,30 @@ class Panel {
     UserBlueprint::$root = $this->kirby->roots()->blueprints() . DS . 'users';
     PageBlueprint::$root = $this->kirby->roots()->blueprints();
 
-    // load the site object
-    $this->site = $this->site();
-
     // setup the session
     $this->session();
 
-    // setup the multilang site stuff
-    $this->multilang();
+    // load the current translation
+    $this->translation()->load();
 
     // load all Kirby extensions (methods, tags, smartypants)
     $this->kirby->extensions();
     $this->kirby->plugins();
+
+    // setup the multilang site stuff
+    $this->multilang();
 
     // setup the form plugin
     form::$root = array(
       'default' => $this->roots->fields,
       'custom'  => $this->kirby->roots()->fields()
     );
+
+    // force ssl if set in config 
+    if($this->kirby->option('ssl') and !r::secure()) {
+      // rebuild the current url with https
+      go(url::build(array('scheme' => 'https')));
+    }
 
     // load all available routes
     $this->routes = array_merge($this->routes, require($this->roots->config . DS . 'routes.php'));
@@ -128,12 +142,21 @@ class Panel {
     $this->router = new Router($this->routes);
 
     // register router filters
-    $this->router->filter('auth', function() use($kirby) {      
+    $this->router->filter('auth', function($route) use($kirby) {      
+
+      $panel = panel();
+
       try {
         $user = panel()->user();
       } catch(Exception $e) {
         panel()->redirect('login');
       }
+
+      // check for area access
+      if($area = $route->area()) {
+        $panel->access($area)->check();
+      }
+
     });
 
     // check for a completed installation
@@ -193,7 +216,7 @@ class Panel {
     if(!is_null($this->csrf)) return $this->csrf;
 
     // see if there's a token in the session
-    $token = s::get('csrf');
+    $token = s::get('kirby_panel_csrf');
 
     // create a new csrf token if not available yet
     if(str::length($token) !== 32) {
@@ -201,7 +224,7 @@ class Panel {
     } 
 
     // store the new token in the session
-    s::set('csrf', $token);
+    s::set('kirby_panel_csrf', $token);
 
     // create a new csrf token
     return $this->csrf = $token;
@@ -212,7 +235,7 @@ class Panel {
 
     $csrf = get('csrf');
 
-    if(empty($csrf) or $csrf !== s::get('csrf')) {        
+    if(empty($csrf) or $csrf !== s::get('kirby_panel_csrf')) {        
   
       try {
         $this->user()->logout();
@@ -245,7 +268,7 @@ class Panel {
 
     if(!$this->site->multilang()) {
       $language = null;
-    } else if($language = get('language') or $language = s::get('lang')) {
+    } else if($language = get('language') or $language = s::get('kirby_panel_lang')) {
       // $language is already set
     } else {
       $language = null;
@@ -259,7 +282,7 @@ class Panel {
 
     // store the language code
     if($this->site->multilang()) {
-      s::set('lang', $this->site->language()->code());      
+      s::set('kirby_panel_lang', $this->site->language()->code());      
     }
 
   }
@@ -320,6 +343,9 @@ class Panel {
     $this->translations = new Collection;
 
     foreach(dir::read($this->roots()->translations()) as $dir) {
+      // filter out everything but directories
+      if(!is_dir($this->roots()->translations() . DS . $dir)) continue;
+      
       // create the translation object
       $translation = new Translation($this, $dir);
       $this->translations->append($translation->code(), $translation);
@@ -333,21 +359,24 @@ class Panel {
 
     if(!is_null($this->translation)) return $this->translation;
 
-    // load the interface language file
-    if($user = $this->site()->user()) {
-      return $this->translation = new Translation($this, $user->language());
-    } else {
-      return $this->translation = new Translation($this, $this->kirby()->option('panel.language', 'en'));
+    // get the default language code from the options
+    $lang = $this->kirby()->option('panel.language', 'en');
+    $user = $this->site()->user();
+
+    if($user && $user->language()) {
+      $lang = $user->language();
     }
+
+    return $this->translation = new Translation($this, $lang);
 
   }
 
   public function language() {
-    return $this->translation;
+    return $this->translation();
   }
 
   public function direction() {
-    return $this->translation->direction();
+    return $this->translation()->direction();
   }
 
   public function launch($path = null) {
@@ -355,34 +384,26 @@ class Panel {
     // set the timezone for all date functions
     date_default_timezone_set($this->kirby->options['timezone']);
 
-    // load the current translation
-    $this->translation()->load();
-
     $this->path  = $this->kirby->path();
     $this->route = $this->router->run($this->path);
     
     // set the current url
     $this->urls->current = rtrim($this->urls->index() . '/' . $this->path, '/');
 
+    // start the error handling
+    new ErrorHandling($this->kirby, $this);
+
     ob_start();
 
-    try {
+    // react on invalid routes
+    if(!$this->route) {
+      throw new Exception(l('routes.error.invalid'));
+    }
 
-      // react on invalid routes
-      if(!$this->route) {
-        throw new Exception(l('routes.error.invalid'));
-      }
-
-      if(is_callable($this->route->action())) {
-        $response = call($this->route->action(), $this->route->arguments());
-      } else {
-        $response = $this->response();
-      }
-
-    } catch(Exception $e) {
-      require_once($this->roots->controllers . DS . 'error.php');
-      $controller = new ErrorController();
-      $response   = $controller->index($e->getMessage(), $e);
+    if(is_callable($this->route->action())) {
+      $response = call($this->route->action(), $this->route->arguments());
+    } else {
+      $response = $this->response();
     }
 
     // check for a valid response object
@@ -462,25 +483,28 @@ class Panel {
       $key = null;
     }
 
-    $localhosts = array('::1', '127.0.0.1', '0.0.0.0');
-
     return new Obj(array(
       'key'   => $key,
-      'local' => (in_array(server::get('SERVER_ADDR'), $localhosts) or server::get('SERVER_NAME') == 'localhost'),
+      'local' => $this->isLocal(),
       'type'  => $type,
     ));
 
   }
 
+  public function isLocal() {
+    $localhosts = array('::1', '127.0.0.1', '0.0.0.0');
+    return (in_array(server::get('SERVER_ADDR'), $localhosts) || server::get('SERVER_NAME') == 'localhost');
+  }
+
   public function notify($text) {
-    s::set('message', array(
+    s::set('kirby_panel_message', array(
       'type' => 'notification', 
       'text' => $text,
     ));
   }
 
   public function alert($text) {
-    s::set('message', array(
+    s::set('kirby_panel_message', array(
       'type' => 'error', 
       'text' => $text,
     ));
@@ -539,6 +563,25 @@ class Panel {
       'content' => $message . $where
     ]);
 
+  }
+
+  public function access($area) {
+    return new Event('panel.access.' . $area);
+  }
+
+  public function __debuginfo() {
+    return [
+      'version'      => $this->version(),
+      'license'      => $this->license(),
+      'roots'        => $this->roots(),
+      'urls'         => $this->urls(),
+      'csrf'         => $this->csrf(),
+      'translations' => $this->translations()->keys(),
+      'translation'  => $this->translation(),
+      'routes'       => $this->routes(),
+      'kirby'        => $this->kirby(),
+      'site'         => $this->site(),
+    ];
   }
 
 }

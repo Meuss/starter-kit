@@ -2,8 +2,9 @@
 
 $site    = panel()->site();
 $options = array();
+$pages   = $site->ui()->pages();
 
-if($site->canHaveSubpages()) {
+if($pages) {
   $options[] = array(
     'text' => l('dashboard.index.pages.edit'),
     'icon' => 'pencil',
@@ -24,13 +25,13 @@ if($addbutton = $site->addButton()) {
 return array(
   'title' => array(
     'text'       => l('dashboard.index.pages.title'),
-    'link'       => $site->url('subpages'),
+    'link'       => $pages ? $site->url('subpages') : false,
     'compressed' => true
   ),
   'options' => $options,
   'html'  => function() use($site) {
     return tpl::load(__DIR__ . DS . 'pages.html.php', array(
-      'pages' => $site->children()
+      'pages' => $site->children()->paginated('sidebar')
     ));
   }
 );

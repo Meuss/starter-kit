@@ -1,22 +1,39 @@
 {
-  "name": "starter-kit",
+  "name": "kirby-starter-kit",
   "version": "1.0.0",
-  "description": "A KirbyCMS-Sass-Gulp Starter Kit",
+  "description": "A quick startup kit for my kirby projects, with gulp/sass/browsersync and empty templates",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meuss/kirby-starter-kit.git"
+  },
+  "keywords": [
+    "kirby",
+    "kirby",
+    "cms",
+    "gulp",
+    "sass"
+  ],
   "author": "Thomas Miller",
-  "repository": "https://github.com/Meuss/starter-kit.git",
-  "license": "MIT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Meuss/kirby-starter-kit/issues"
+  },
+  "homepage": "https://github.com/Meuss/kirby-starter-kit#readme",
   "devDependencies": {
-    "browser-sync": "^2.11.2",
+    "browser-sync": "^2.17.5",
     "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.0",
-    "gulp-clean-css": "^2.0.4",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean-css": "^3.0.4",
     "gulp-concat": "^2.6.0",
+    "gulp-notify": "^3.0.0",
     "gulp-plumber": "^1.1.0",
-    "gulp-sass": "^2.2.0",
-    "gulp-uglify": "^1.5.3"
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.5.1",
+    "gulp-uglify": "^2.0.0"
   }
 }

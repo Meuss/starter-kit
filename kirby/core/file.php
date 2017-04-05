@@ -11,6 +11,10 @@
  */
 abstract class FileAbstract extends Media {
 
+  use Kirby\Traits\Image;
+
+  static public $methods = array();
+
   public $kirby;
   public $site;
   public $page;
@@ -79,29 +83,58 @@ abstract class FileAbstract extends Media {
     return $this->page->textfile($this->filename());
   }
 
+  /**
+   * Returns all siblings as Files collection
+   * 
+   * @return Files
+   */
   public function siblings() {
     return $this->files->not($this->filename);
   }
 
-  function next() {
+  /**
+   * Returns the next file object 
+   * if available
+   * 
+   * @return File|false
+   */
+  public function next() {
     $siblings = $this->files;
     $index    = $siblings->indexOf($this);
     if($index === false) return false;
     return $this->files->nth($index+1);
   }
 
-  function hasNext() {
+  /**
+   * Checks if there's a next file 
+   * in the siblings collection
+   * 
+   * @return boolean
+   */  
+  public function hasNext() {
     return $this->next();
   }
 
-  function prev() {
+  /**
+   * Returns the previous file object 
+   * if available
+   * 
+   * @return File|false
+   */
+  public function prev() {
     $siblings = $this->files;
     $index    = $siblings->indexOf($this);
     if($index === false) return false;
     return $this->files->nth($index-1);
   }
 
-  function hasPrev() {
+  /**
+   * Checks if there's a previous file 
+   * in the siblings collection
+   * 
+   * @return boolean
+   */
+  public function hasPrev() {
     return $this->prev();
   }
 
@@ -110,8 +143,30 @@ abstract class FileAbstract extends Media {
    *
    * @return string
    */
-  public function url() {
-    return $this->page->contentUrl() . '/' . rawurlencode($this->filename);
+  public function url($raw = false) {
+    if($raw || empty($this->modifications)) {
+      return $this->page->contentUrl() . '/' . rawurlencode($this->filename);
+    } else {
+      return $this->kirby->component('thumb')->url($this);      
+    }  
+  }
+
+  /**
+   * Returns the relative URI for the image
+   *
+   * @return string
+   */
+  public function uri() {
+    return $this->page->uri() . '/' . rawurlencode($this->filename);
+  }
+
+  /**
+   * Returns the full directory path starting from the content folder
+   *
+   * @return string
+   */
+  public function diruri() {
+    return $this->page->diruri() . '/' . rawurlencode($this->filename);
   }
 
   /**
@@ -150,7 +205,13 @@ abstract class FileAbstract extends Media {
    * @return Field
    */
   public function __call($key, $arguments = null) {
-    return $this->meta()->get($key, $arguments);
+    if(isset(static::$methods[$key])) {
+      if(!$arguments) $arguments = array();
+      array_unshift($arguments, clone $this);
+      return call(static::$methods[$key], $arguments);
+    } else {
+      return $this->meta()->get($key, $arguments);
+    }
   }
 
   /**
@@ -220,6 +281,12 @@ abstract class FileAbstract extends Media {
 
   }
 
+  /**
+   * Updates the file meta 
+   * 
+   * @param array $data
+   * @return boolean
+   */
   public function update($data = array()) {
 
     $data = array_merge((array)$this->meta()->toArray(), $data);
@@ -243,6 +310,12 @@ abstract class FileAbstract extends Media {
 
   }
 
+  /**
+   * Deletes the file from the content folder
+   * and also removes the corresponding meta file
+   * 
+   * @return boolean
+   */
   public function delete() {
 
     // delete the meta file
@@ -257,30 +330,23 @@ abstract class FileAbstract extends Media {
 
   }
 
-  public function resize($width, $height = null, $quality = null) {
-
-    if($this->type() != 'image') return $this;
-
-    $params = array('width' => $width);
-
-    if($height)  $params['height']  = $height;
-    if($quality) $params['quality'] = $quality;
-
-    return thumb($this, $params);
-
-  }
-
-  public function crop($width, $height = null, $quality = null) {
-
-    if($this->type() != 'image') return $this;
-
-    $params = array('width' => $width, 'crop' => true);
-
-    if($height)  $params['height']  = $height;
-    if($quality) $params['quality'] = $quality;
-
-    return thumb($this, $params);
-
+  /**
+   * Get formatted date fields
+   *
+   * @param string $format
+   * @param string $field
+   * @return mixed
+   */
+  public function date($format = null, $field = 'date') {
+    if($timestamp = strtotime($this->meta()->$field())) {
+      if(is_null($format)) {
+        return $timestamp;
+      } else {
+        return $this->kirby->options['date.handler']($format, $timestamp);
+      }
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -306,12 +372,16 @@ abstract class FileAbstract extends Media {
   }
 
   /**
-   * Makes it possible to echo the entire object
-   *
-   * @return string
+   * Improved var_dump() output
+   * 
+   * @return array
    */
-  public function __toString() {
-    return (string)$this->root;
+  public function __debuginfo() {
+    return array_merge(parent::__debuginfo(), [
+      'page'     => $this->page()->id(),
+      'meta'     => $this->meta(),
+      'siblings' => $this->siblings(),
+    ]);
   }
 
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Users
+ * User
  *
  * @package   Kirby CMS
  * @author    Bastian Allgeier <bastian@getkirby.com>
@@ -93,35 +93,62 @@ abstract class UserAbstract {
 
   // support for old 'panel' role permission
   public function hasPanelAccess() {
-    return $this->role()->hasPermission('panel.access');
+    return $this->can('panel.access');
   }
 
-  public function hasPermission($target) {
-    return $this->role()->hasPermission($target);
+  /**
+   * Checks if the user has permission for the specified event
+   *
+   * @param Event $event Event object or a string with the event name
+   * @param mixed $args Additional arguments for the permission callbacks
+   * @return Obj Object with status() and message() methods
+   */
+  public function permission($event, $args = []) {
+    if(is_string($event)) {
+      $event = new Kirby\Event($event);
+    } else if(!is_a($event, 'Kirby\\Event')) {
+      throw new Error('Invalid event.');
+    }
+
+    // make sure that the user is set correctly
+    $event->user = $this;
+
+    return $this->role()->permission($event, $args);
+  }
+
+  /**
+   * Returns true if the user has permission for the specified event
+   *
+   * @param Event $event Event object or a string with the event name
+   * @param mixed $args Additional arguments for the permission callbacks
+   * @return boolean
+   */
+  public function can($event, $args = []) {
+    return $this->permission($event, $args)->status() === true;
+  }
+
+  /**
+   * Returns true if the user has *no* permission for the specified event
+   *
+   * @param Event $event Event object or a string with the event name
+   * @param mixed $args Additional arguments for the permission callbacks
+   * @return boolean
+   */
+  public function cannot($event, $args = []) {
+    return $this->permission($event, $args)->status() === false;
   }
 
   public function isAdmin() {
-    return $this->role()->id() == 'admin';
+    return $this->role()->id() === 'admin';
   }
 
   public function avatar() {
 
     if(isset($this->cache['avatar'])) return $this->cache['avatar'];
 
-    // allowed extensions
-    $extensions = array('jpg', 'jpeg', 'png', 'gif');
+    $avatar = new Avatar($this);
 
-    // try to find the avatar
-    $root = kirby::instance()->roots()->avatars() . DS . $this->username();
-
-    foreach($extensions as $ext) {
-      $file = $root . '.' . $ext;
-      if(file_exists($file)) {
-        return $this->cache['avatar'] = new Media($file, kirby::instance()->urls()->avatars() . '/' . f::filename($file));
-      }
-    }
-
-    return $this->cache['avatar'] = false;
+    return $this->cache['avatar'] = $avatar->exists() ? $avatar : false;
 
   }
 
@@ -135,6 +162,10 @@ abstract class UserAbstract {
 
   protected function file() {
     return kirby::instance()->roots()->accounts() . DS . $this->username() . '.php';
+  }
+
+  public function textfile() {
+    return $this->file();
   }
 
   public function exists() {
@@ -151,12 +182,34 @@ abstract class UserAbstract {
 
   public function login($password) {
 
-    static::logout();
-
     if(!password::match($password, $this->password)) return false;
 
-    // create a new session id
+    $data = array();
+    if(static::current()) {
+      // logout active users first
+      static::logout();
+      
+      // don't preserve current session data
+      // because of privilege level change
+    } else {
+      // get all the current session data
+      $data = s::get();
+
+      // remove anything kirby related from 
+      // the current session data
+      foreach($data as $key => $value) {
+        if(str::startsWith($key, 'kirby_')) {
+          unset($data[$key]);
+        }
+      }
+    }
+
+    // start a new session with a new session ID
+    s::restart();
     s::regenerateId();
+
+    // copy over the old session stuff
+    s::set($data);
 
     $key    = $this->generateKey();
     $secret = $this->generateSecret($key);
@@ -179,8 +232,12 @@ abstract class UserAbstract {
   }
 
   static public function logout() {
+
     s::destroy();    
+
+    // remove the session cookie
     cookie::remove(s::$name . '_auth');
+
   }
 
   public function is($user) {
@@ -318,9 +375,12 @@ abstract class UserAbstract {
   }
 
   static public function unauthorize() {
+
     s::remove('kirby_auth_secret');
     s::remove('kirby_auth_username');
+
     cookie::remove('kirby_auth');
+
   }
 
   static public function current() {
@@ -349,8 +409,34 @@ abstract class UserAbstract {
 
   }
 
+  /**
+   * Converts the user object to an array
+   * 
+   * @return array
+   */
+  public function toArray() {
+    return [
+      'username'  => $this->username(),
+      'email'     => $this->email(),
+      'role'      => $this->role()->id(),
+      'language'  => $this->language(),
+      'avatar'    => $this->avatar() ? $this->avatar()->url() : false,
+      'gravatar'  => $this->gravatar(),
+      'isCurrent' => $this->isCurrent()
+    ];
+  }
+
   public function __toString() {
     return (string)$this->username;
+  }
+
+  /**
+   * Improved @var_dump output
+   * 
+   * @return array
+   */
+  public function __debuginfo() {
+    return $this->toArray();
   }
 
 }

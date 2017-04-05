@@ -1,6 +1,7 @@
 <?php 
 
 use Kirby\Panel\Form;
+use Kirby\Panel\Event;
 
 return function($page) {
 
@@ -40,16 +41,9 @@ return function($page) {
     $form->buttons->cancel = '';    
   }
 
-  // check for untranslatable fields
-  if(panel()->site()->language() != panel()->site()->defaultLanguage()) {
-
-    foreach($form->fields() as $field) {
-      if($field->translate() == false) {
-        $field->readonly = true;
-        $field->disabled = true;
-      }
-    }
-
+  // check for update permissions
+  if(!$page->ui()->update()) {
+    $form->disable();
   }
 
   return $form;

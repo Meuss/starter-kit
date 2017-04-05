@@ -1,0 +1,22 @@
+// =====================================================
+// Color variables
+// =====================================================
+$black: #333;
+$white: #fff;
+
+// =====================================================
+// Fonts
+// =====================================================
+@font-face {
+  
+}
+@mixin font-regular {
+  font-family: "FONT_NAME_HERE", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+@mixin font-bold {
+  font-family: "FONT_NAME_HERE", serif;
+  font-weight: 500;
+  font-style: normal;
+}

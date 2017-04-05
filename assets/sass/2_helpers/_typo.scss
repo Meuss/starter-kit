@@ -1,0 +1,8 @@
+a {
+  // removing android blue outline
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  color: $red;
+}
+a[href^="tel:"] {
+  text-decoration: none;
+}

@@ -12,11 +12,11 @@
   <?php echo css('assets/min/style.css') ?>
 
 </head>
-<body>
+<body class="page-<?php echo $site->uri() ?>">
 
   <header class="header cf" role="banner">
     <a class="logo" href="<?php echo url() ?>">
-      <img src="<?php echo url('assets/images/logo.svg') ?>" alt="<?php echo $site->title()->html() ?>" />
+      Logo
     </a>
     <?php snippet('menu') ?>
   </header>

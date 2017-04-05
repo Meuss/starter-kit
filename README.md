@@ -1,4 +1,4 @@
-# kirby-starter-kit ![alt tag](https://getkirby.com/assets/images/kirbyicon.svg)
+# kirby-starter-kit
 Hey, this is my personal kirby starter kit, built so I can start building new websites quickly. Please let me know how I could make it better/if you have questions.
 
 ## SETTING UP - Checklists

@@ -1,0 +1,85 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none;
+  padding-left: 0; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after {
+  content: "";
+  content: none; }
+
+q:before, q:after {
+  content: "";
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+a {
+  text-decoration: none; }
+
+@font-face {}a {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); }
+
+a[href^="tel:"] {
+  text-decoration: none; }
+
+header {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-pack: justify;
+          justify-content: space-between; }
+
+#mediaqueries {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
+  z-index: 1000;
+  display: -webkit-box;
+  display: flex;
+  font-size: 16px;
+  background-color: pink; }
+  @media (min-width: 1400px) {
+    #mediaqueries::after {
+      content: "xxl>1400"; } }
+  @media (max-width: 1400px) {
+    #mediaqueries::after {
+      content: "xl<1400"; } }
+  @media (max-width: 1200px) {
+    #mediaqueries::after {
+      content: "lg<1200"; } }
+  @media (max-width: 992px) {
+    #mediaqueries::after {
+      content: "md<992"; } }
+  @media (max-width: 768px) {
+    #mediaqueries::after {
+      content: "sm<768"; } }
+  @media (max-width: 480px) {
+    #mediaqueries::after {
+      content: "xs<480"; } }

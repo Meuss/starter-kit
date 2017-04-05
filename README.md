@@ -18,18 +18,17 @@ Hey, this is my personal kirby starter kit, built so I can start building new we
 - [https://getkirby.com/docs/languages/setup](https://getkirby.com/docs/languages/setup)
 - change html lang attribute
 
-####### TODOs
-
-- add webpack
-- add mobile detect to body class
-- add the body default loading class and javascript logic
-- add image compression to gulp flow?
-- should I include multilanguage by default?
-- should I include the kirby json api?
-
 ### Other Remarks
 
 Don't forget to visit the awesome [Kirby docs](https://getkirby.com/docs/languages/setup) and the [Kirby forum](https://forum.getkirby.com/)
 
 ###### eslint
 - `eslint name-of-file.js --fix`
+
+###### TODOS for this repo
+- add webpack
+- add mobile detect to body class
+- add the body default loading class and javascript logic
+- add image compression to gulp flow?
+- should I include multilanguage by default?
+- should I include the kirby json api?

@@ -1,4 +1,5 @@
-@import "helpers/helpers";
-@import "includes/includes";
-@import "modules/modules";
-@import "pages/pages";
+@import "1_includes/includes";
+@import "2_helpers/helpers";
+@import "3_layout/layout";
+@import "4_modules/modules";
+@import "5_pages/pages";

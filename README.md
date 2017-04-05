@@ -26,6 +26,8 @@ Don't forget to visit the awesome [Kirby docs](https://getkirby.com/docs/languag
 - `eslint name-of-file.js --fix`
 
 ###### TODOS for this repo
+- add some initial pages
+- maybe add a basic mobile menu snippet, and js toggle logic?
 - add webpack
 - add mobile detect to body class
 - add the body default loading class and javascript logic

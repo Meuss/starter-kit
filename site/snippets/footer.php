@@ -1,14 +1,9 @@
   <footer class="footer cf" role="contentinfo">
-
-    <div class="copyright">
-      <?php echo $site->copyright()->kirbytext() ?>
-    </div>
-
-    <div class="colophon">Thomas Miller</a>
-    </div>
-
+    <div class="footer-copyright"><h5><?php echo html::decode($site->copyright()->kirbytext()) ?></h5></div>
+    <div><a href="mailto:thomasmiller147@gmail.com">Thomas Miller</a><div>
   </footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<?php echo js('assets/min/script.js') ?>
+
+  <?php echo js('assets/min/script.js') ?>
+  
 </body>
 </html>

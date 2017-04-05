@@ -1,22 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="<?= site()->language() ? site()->language()->code() : 'en' ?>">
 <head>
 
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-  <title><?php echo $site->title()->html() ?> | <?php echo $page->title()->html() ?></title>
-  <meta name="description" content="<?php echo $site->description()->html() ?>">
-  <meta name="keywords" content="<?php echo $site->keywords()->html() ?>">
-
-  <?php echo css('assets/min/style.css') ?>
+  <title><?= $site->title()->html() ?> | <?= $page->title()->html() ?></title>
+  <meta name="description" content="<?= $site->description()->html() ?>">
+  <?= css('assets/min/style.css') ?>
 
 </head>
-<body class="page-<?php echo $site->uri() ?>">
-
-  <header class="header cf" role="banner">
-    <a class="logo" href="<?php echo url() ?>">
-      Logo
-    </a>
-    <?php snippet('menu') ?>
+<body class="loading page-<?= $page->uid() ?><?php
+if (!empty($page->parent()->uid())) {
+   echo ' '.$page->parent()->uid().'-child-page';
+ }  ?>">
+  <div id="mediaqueries"></div>
+  <header class="header" role="banner">
+    <div class="inner-header">
+      <div class="branding">
+        <a class="logo" href="<?= url() ?>" rel="home">logo</a>
+      </div>
+      <?php snippet('menu') ?>
+    </div>
   </header>

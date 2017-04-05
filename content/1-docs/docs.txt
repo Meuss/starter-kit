@@ -8,4 +8,3 @@ Text:
 
 - (link: http://getkirby.com/docs text: Kirby Docs)
 - (link: http://getkirby.com/docs/cheatsheet text: Kirby Cheat Sheet)
-- (link: https://github.com/Meuss/kirby-starter-kit text: This Starter Kit on Github)

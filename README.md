@@ -1,6 +1,6 @@
 # My :heart:Kirby:heart: Starter Kit
 
-#####*with gulp, scss, browsersync, babel*
+##### *with gulp, scss, browsersync, babel*
 Hey, this is my personal kirby starter kit, built so I can start building new websites quickly. Please let me know if I should explain something better/if you got anything to add. Drop me an email at thomas.miller147@gmail.com to say hi :bowtie:
 
 ## SETTING UP - Checklists
@@ -11,7 +11,7 @@ Hey, this is my personal kirby starter kit, built so I can start building new we
 - `npm install`
 
 ### Kirby version updates
-- compare kirby version from kirby>kirby.php
+- compare latest kirby version and this one (kirby>kirby.php)
 - if you need an update, replace the folders **kirby** and **panel** with the new ones.
 
 ### Do you need multilanguage?

@@ -27,6 +27,7 @@ Don't forget to visit the awesome [Kirby docs](https://getkirby.com/docs/languag
 - `eslint name-of-file.js --fix`
 
 ###### TODOS for this repo
+- move the scss from the pages.scss to mixins
 - add some initial pages
 - maybe add a basic mobile menu snippet, and js toggle logic?
 - add webpack

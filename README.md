@@ -6,8 +6,9 @@ My personal kirby starter kit, built so I can start building new websites quickl
 ## SETTING UP - Checklists
 
 ### Npm packages updates
-- `npm i -g npm-check-updates`
-- `npm-check-updates -u`
+- `npm i -g npm-check-updates` (or alias "ncu")
+- `ncu -u` (to check for updates)
+- `ncu -a`(to update package.json)
 - `npm install`
 
 ### Kirby version updates

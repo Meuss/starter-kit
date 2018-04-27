@@ -19,27 +19,27 @@ const notify = require('gulp-notify');
 // Javascript global task:
 // ===================================
 
-gulp.task('javascript', function(){
+gulp.task('javascript', () => {
   gulp.src('assets/js/global/*.js')
-  .pipe(plumber())
-  .pipe(sourcemaps.init())
-  .pipe(concat('script.js'))
-  .pipe(babel({
-    presets: ['es2015']
-  }))
-  .pipe(sourcemaps.write('.'))
-  // .pipe(uglify())
-  .pipe(gulp.dest('assets/min'))
-  .pipe(reload({stream:true}))
-  .pipe(notify({ message: 'global js'}));
+    .pipe(plumber())
+    .pipe(sourcemaps.init())
+    .pipe(concat('script.js'))
+    .pipe(babel({
+      presets: ['es2015']
+    }))
+    .pipe(sourcemaps.write('.'))
+    // .pipe(uglify())
+    .pipe(gulp.dest('assets/min'))
+    .pipe(reload({ stream: true }))
+    .pipe(notify({ message: 'global js' }));
 });
 
 // ===================================
 // Javascript single tast:
 // ===================================
 
-gulp.task('javascript-single', function(){
-    gulp.src('assets/js/single/*.js')
+gulp.task('javascript-single', () => {
+  gulp.src('assets/js/single/*.js')
     .pipe(plumber())
     .pipe(sourcemaps.init())
     .pipe(babel({
@@ -48,54 +48,54 @@ gulp.task('javascript-single', function(){
     .pipe(sourcemaps.write('.'))
     // .pipe(uglify())
     .pipe(gulp.dest('assets/min/single'))
-    .pipe(reload({stream:true}))
-    .pipe(notify({ message: 'single js'}));
+    .pipe(reload({ stream: true }))
+    .pipe(notify({ message: 'single js' }));
 });
 
 // ===================================
 // Sass task
 // ===================================
 
-gulp.task('sass', function(){
-    gulp.src('assets/sass/style.scss')
+gulp.task('sass', () => {
+  gulp.src('assets/sass/style.scss')
     .pipe(plumber())
     .pipe(sass())
     .pipe(autoprefixer('>1%', 'ios_saf 8', 'ie 11'))
     // .pipe(minify())
     .pipe(gulp.dest('assets/min'))
-    .pipe(reload({stream:true}))
-    .pipe(notify({ message: 'scss'}));
+    .pipe(reload({ stream: true }))
+    .pipe(notify({ message: 'scss' }));
 });
 
 // ===================================
 // PHP task
 // ===================================
 
-gulp.task('php', function(){
-    gulp.src(['site/templates/*.php', 'site/snippets/*.php'])
-    .pipe(reload({stream:true}));
+gulp.task('php', () => {
+  gulp.src(['site/templates/*.php', 'site/snippets/*.php'])
+    .pipe(reload({ stream: true }));
 });
 
 // ===================================
 // Browser-sync task
 // ===================================
 
-gulp.task('browser-sync', function(){
-    browserSync({
-        proxy: "localhost:8888",
-        browser: "google chrome"
-    });
+gulp.task('browser-sync', () => {
+  browserSync({
+    proxy: "localhost:8888",
+    browser: "google chrome"
+  });
 });
 
 // ===================================
 // Watch tasks
 // ===================================
 
-gulp.task('watch', function(){
-    gulp.watch('assets/js/global/*.js', ['javascript']);
-    gulp.watch('assets/js/single/*.js', ['javascript-single']);
-    gulp.watch('assets/sass/**/*.scss', ['sass']);
-    gulp.watch(['site/templates/*.php', 'site/snippets/*.php'], ['php']);
+gulp.task('watch', () => {
+  gulp.watch('assets/js/global/*.js', ['javascript']);
+  gulp.watch('assets/js/single/*.js', ['javascript-single']);
+  gulp.watch('assets/sass/**/*.scss', ['sass']);
+  gulp.watch(['site/templates/*.php', 'site/snippets/*.php'], ['php']);
 });
 
 // ===================================

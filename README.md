@@ -1,7 +1,7 @@
 # My :heart:Kirby:heart: Starter Kit
 
 ##### *with gulp, scss, browsersync, babel*
-Hey, this is my personal kirby starter kit, built so I can start building new websites quickly. Please let me know if I should explain something better/if you got anything to add. Drop me an email at thomas.miller147@gmail.com to say hi :bowtie:
+My personal kirby starter kit, built so I can start building new websites quickly. :bowtie:
 
 ## SETTING UP - Checklists
 
@@ -26,11 +26,9 @@ Don't forget to visit the awesome [Kirby docs](https://getkirby.com/docs/languag
 - `eslint name-of-file.js --fix`
 
 ###### TODOS for this repo
-- add some initial pages
-- maybe add a basic mobile menu snippet, and js toggle logic?
-- add webpack
-- add mobile detect to body class
-- add the body default loading class and javascript logic
-- add image compression to gulp flow?
+- maybe add a mobile menu snippet, and js toggle logic?
+- add mobile detect to body class for quick IE shit
+- add image compression to gulp flow
 - should I include multilanguage by default?
-- should I include the kirby json api?
+- auto hreflang tags
+- start adding me some vue?
